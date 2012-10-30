@@ -35,5 +35,35 @@ public class RekeningTest{
 		Rekening rekening = new Rekening("214", "2323", -200);
 		assertNotNull(rekening);
 	}
+	@Test(expected = AssertionError.class)
+	public void getNullPasnummer()	{
+		Rekening rekening = new Rekening(null, "2323", 200);
+		rekening.getPasnummer();
+		assertNotNull(rekening);
+	}
+	@Test(expected = AssertionError.class)
+	public void getLeegPasnummer()	{
+		Rekening rekening = new Rekening("", "2323", 200);
+		rekening.getPasnummer();
+		assertNotNull(rekening);
+	}
+	@Test(expected = AssertionError.class)
+	public void getNullPincode()	{
+		Rekening rekening = new Rekening("214", null, 200);
+		rekening.getPincode();
+		assertNotNull(rekening);
+	}
+	@Test(expected = AssertionError.class)
+	public void getLegePincode()	{
+		Rekening rekening = new Rekening("214", "", 200);
+		rekening.getPincode();
+		assertNotNull(rekening);
+	}
+	@Test(expected = AssertionError.class)
+	public void getTeLaagSaldo()	{
+		Rekening rekening = new Rekening("214", "2323", -200);
+		rekening.getSaldo();
+		assertNotNull(rekening);
+	}
 
 }
