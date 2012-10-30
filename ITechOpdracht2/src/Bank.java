@@ -106,6 +106,10 @@ public class Bank {
 				if (werkRekening.getSaldo() > Integer.parseInt(keuzesplit[1])){
 					werkRekening.setSaldo(werkRekening.getSaldo() - Integer.parseInt(keuzesplit[1]));
 					writer.println("opname true");
+					writer.close();
+					inFromClient.close();
+					connectionSocket.close();
+					break;
 				} else {
 					writer.println("opname false");
 				}
@@ -124,7 +128,11 @@ public class Bank {
 					writer.println("opname false");
 				}
 			}
-			//connectionSocket.close();
+			
+			writer.close();
+			inFromClient.close();
+			connectionSocket.close();
+			break;
 		}
 
 	}
