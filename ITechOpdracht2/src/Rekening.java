@@ -1,9 +1,20 @@
+
+/**
+ * Modelklasse voor rekening.
+ *
+ */
 public class Rekening {
 	
 	private String pasnummer;
 	private String pincode;
 	private double saldo;
 	
+	/**
+	 * constructor
+	 * @param pasnummer String pasnummer
+	 * @param pincode	String pincode
+	 * @param saldo		Double saldo
+	 */
 	public Rekening(String pasnummer, String pincode, double saldo) {
 		assert pasnummer != null: "pasnummer mag niet null zijn";
 		assert pasnummer.length() > 0: "pasnummer mag niet leeg zijn";
@@ -15,6 +26,7 @@ public class Rekening {
 		this.saldo = saldo;
 	}
 
+	//getters en setters
 	public String getPasnummer() {
 		assert pasnummer != null: "pasnummer mag niet null zijn";
 		assert pasnummer.length() > 0: "pasnummer mag niet leeg zijn";

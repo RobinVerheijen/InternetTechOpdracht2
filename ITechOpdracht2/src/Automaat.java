@@ -4,26 +4,34 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 
-
+/**
+ * Het automaat. Client. 
+ *
+ */
 public class Automaat {
 
 	private static final int id = 10;
-	private String address;
 	private static BufferedReader inFromUser;
 	private static DataOutputStream outToServer;
 	private static BufferedReader inFromServer;
 	private static Socket clientSocket;
 	private static String pasnummer;
 
-
+	/**
+	 * uitvoerende code, kijk in code voor meer info.
+	 * @param argv
+	 * @throws Exception
+	 */
 	public static void main(String[] args) throws Exception {
 
 		String sentence;
-
 		String pincode = null;
 
+		//user vragen om pincode
 		System.out.println("Vul uw pasnummer in: ");
 		inFromUser = new BufferedReader(new InputStreamReader(System.in));
+		
+		//verbinding, reader en writer openen
 		clientSocket = new Socket("localhost",8080);
 		outToServer = new DataOutputStream(clientSocket.getOutputStream());
 		inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
@@ -37,7 +45,6 @@ public class Automaat {
 		outToServer.writeBytes("bankcontrole" + "\n");
 
 		//reactie van de bank uitlezen, als het het juiste id is stuurt de automaat de informatie op
-
 		sentence = inFromServer.readLine();
 		String[] bankcheck = sentence.split(" ");
 
@@ -49,20 +56,17 @@ public class Automaat {
 				clientSocket.close();
 			}
 		}
-
 		String authenticatie = inFromServer.readLine();
 
+		// als bank = bank en automaat = automaat goed is, pasnummer opsturen
 		if(authenticatie.equals("1"))	{
-			System.out.println("authenticatie correct");
 			outToServer.writeBytes("pasnummer " + pasnummer + "\n");
 		} else if(authenticatie.equals("2"))	{
-			System.out.println("authenticatie fout");
+			System.out.println("authenticatie fout!");
 		}
 
+		//controle of pas goed is, en om pincode vragen als goed is.
 		String[] pasnummerAuthenticatie = inFromServer.readLine().split(" ");
-
-		System.out.println(pasnummerAuthenticatie[0]);
-		System.out.println(pasnummerAuthenticatie[1]);
 
 		if(pasnummerAuthenticatie[0].equals("pasnummer"))	{
 			if(pasnummerAuthenticatie[1].equals("1"))	{
@@ -75,10 +79,11 @@ public class Automaat {
 			}
 		}
 		
+		//contole of pincode goed is.
 		String[] pincodeAuthenticatie = inFromServer.readLine().split(" ");
 		pinCodeCheck(pincodeAuthenticatie);
 
-		
+		//als goed is, user vragen of hij geld wil opnemen of saldo wil bekijken.
 		String keuze = inFromUser.readLine();
 		String choice = checkChoice(keuze);
 		if (choice.equals("2")) {
@@ -94,6 +99,12 @@ public class Automaat {
 		}
 	}
 
+	/**
+	 * aan de hand van de keuze van de user, het saldo weergeven, of geld opnemen.
+	 * @param choice String keuze
+	 * @return String keuze
+	 * @throws IOException
+	 */
 	private static String checkChoice(String choice) throws IOException	{
 		if(choice.equals("1"))	{
 			outToServer.writeBytes("saldo\n");
@@ -113,6 +124,11 @@ public class Automaat {
 		return choice;
 	}
 
+	/**
+	 * als saldo is opgevraagd, nogmaals vragen of user wil opnemen of niet.
+	 * @param choice String keuze
+	 * @throws IOException
+	 */
 	private static void checkChoice2(String choice) throws IOException	{
 		if(choice.equals("1"))	{
 			opnemen();
@@ -126,6 +142,10 @@ public class Automaat {
 		}
 	}
 	
+	/**
+	 * User vragen hoeveel hij wil opnemen, en dat uitvoeren. foutmelding indien niet genoeg saldo.
+	 * @throws IOException
+	 */
 	private static void opnemen() throws IOException {
 		System.out.println("Welk bedrag wilt u opnemen: ");
 		String opname = inFromUser.readLine();
@@ -141,10 +161,13 @@ public class Automaat {
 			System.out.println("Te weinig saldo!, Sessie wordt be‘indigd.");
 		}
 	}
+	
+	/**
+	 * methode om bij te houden wat er met het aantal pincode pogingen gebeurt.
+	 * @param pincodeAuthenticatie String[] gesplitte reactie van bank.
+	 * @throws IOException
+	 */
 	private static void pinCodeCheck(String[] pincodeAuthenticatie) throws IOException	{
-
-		System.out.println(pincodeAuthenticatie[0]);
-		System.out.println(pincodeAuthenticatie[1]);
 
 		if(pincodeAuthenticatie[0].equals("pincode"))	{
 			if(pincodeAuthenticatie[1].equals("1"))	{
