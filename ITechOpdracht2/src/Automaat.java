@@ -89,18 +89,24 @@ public class Automaat {
 			}
 		}	
 		String keuze = inFromUser.readLine();
-		checkChoice(keuze);
-		System.out.println("Wat wilt u nu doen?\n" +
-				"1. Geld opnemen\n" +
-				"2. Stoppen");
-		keuze = inFromUser.readLine();
-		if(keuze.equals("1"))	{
-			
-		} else if(keuze.equals("2"))	{
-			System.out.println("Sessie be‘indigd, prettige dag verder");
+		String choice = checkChoice(keuze);
+		if (choice.equals("2")) {
+			System.out.println("Sessie geslaagd, prettige dag verder");
 			clientSocket.close();
+		} else {
+			System.out.println("Wat wilt u nu doen?\n" +
+					"1. Geld opnemen\n" +
+					"2. Stoppen");
+			keuze = inFromUser.readLine();
+			if(keuze.equals("1"))	{
+				opnemen();
+			} else if(keuze.equals("2"))	{
+				System.out.println("Sessie be‘indigd, prettige dag verder");
+				clientSocket.close();
+			}
 		}
 	}
+
 	private static String checkChoice(String choice) throws IOException	{
 		if(choice.equals("1"))	{
 			outToServer.writeBytes("saldo\n");
@@ -109,15 +115,31 @@ public class Automaat {
 
 			System.out.println("Uw huidige saldo bedraagt: " + saldo);
 
-			
-		} else if (choice.equals("2"))	{
-			outToServer.writeBytes("opname\n");
 
+		} else if (choice.equals("2"))	{
+			opnemen();
 		} else	{
 			System.out.println("Onjuiste keuze, maak een keuze uit 1 of 2");
 			choice = inFromUser.readLine();
 			checkChoice(choice);
 		}
 		return choice;
+	}
+
+	private static void opnemen() throws IOException {
+		System.out.println("Welk bedrag wilt u opnemen: ");
+		String opname = inFromUser.readLine();
+
+		outToServer.writeBytes("opname " + opname + "\n");
+
+		String opnameStatus = inFromServer.readLine();
+		String[] opnameStatusSplit = opnameStatus.split(" ");
+
+		if (opnameStatusSplit[1].equals("true")){
+			System.out.println("Geslaagd");
+		} else {
+			System.out.println("Te weinig saldo!, Sessie wordt be‘indigd.");
+		}
+
 	}
 }

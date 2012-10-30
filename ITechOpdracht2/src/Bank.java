@@ -98,12 +98,31 @@ public class Bank {
 			}
 
 			String keuze = inFromClient.readLine();
-		
-			
-			if(keuze.equals("saldo"))	{
+			String[] keuzesplit = keuze.split(" ");
+						
+			if(keuzesplit[0].equals("saldo"))	{
 				writer.println(werkRekening.getSaldo());
-			} else if(keuze.equals("opname"))	{
-				
+			} else if (keuzesplit[0].equals("opname")) {
+				if (werkRekening.getSaldo() > Integer.parseInt(keuzesplit[1])){
+					werkRekening.setSaldo(werkRekening.getSaldo() - Integer.parseInt(keuzesplit[1]));
+					writer.println("opname true");
+				} else {
+					writer.println("opname false");
+				}
+			}
+			
+			String keuze2 = inFromClient.readLine();
+			String[] keuzesplit2 = keuze2.split(" ");
+						
+			if(keuzesplit2[0].equals("saldo"))	{
+				writer.println(werkRekening.getSaldo());
+			} else if (keuzesplit2[0].equals("opname")) {
+				if (werkRekening.getSaldo() > Integer.parseInt(keuzesplit2[1])){
+					werkRekening.setSaldo(werkRekening.getSaldo() - Integer.parseInt(keuzesplit2[1]));
+					writer.println("opname true");
+				} else {
+					writer.println("opname false");
+				}
 			}
 			//connectionSocket.close();
 		}
