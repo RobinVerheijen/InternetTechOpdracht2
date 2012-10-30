@@ -21,7 +21,7 @@ public class Bank {
 	private static Socket connectionSocket;
 
 	/**
-	 * uitvoerende code, kijk in code voor meer info.
+	 * uitvoerende code, kijk in de code voor meer info.
 	 * @param argv
 	 * @throws Exception
 	 */
@@ -141,7 +141,7 @@ public class Bank {
 	}
 	
 	/**
-	 * methode om bij te houden hoeveel pincode pogingen de automaat nog heeft.
+	 * Methode om bij te houden hoeveel pincode pogingen de user nog heeft.
 	 * @param pincode String pincode
 	 * @throws IOException
 	 */

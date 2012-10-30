@@ -1,6 +1,6 @@
 
 /**
- * Modelklasse voor rekening.
+ * Modelklasse voor Rekening.
  *
  */
 public class Rekening {
@@ -10,7 +10,7 @@ public class Rekening {
 	private double saldo;
 	
 	/**
-	 * constructor
+	 * Constructor
 	 * @param pasnummer String pasnummer
 	 * @param pincode	String pincode
 	 * @param saldo		Double saldo

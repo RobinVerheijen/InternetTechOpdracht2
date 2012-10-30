@@ -5,8 +5,7 @@ import java.io.InputStreamReader;
 import java.net.Socket;
 
 /**
- * Het automaat. Client. 
- *
+ * De automaat. Client. 
  */
 public class Automaat {
 
@@ -18,7 +17,7 @@ public class Automaat {
 	private static String pasnummer;
 
 	/**
-	 * uitvoerende code, kijk in code voor meer info.
+	 * Uitvoerende code, kijk in de code voor meer info.
 	 * @param argv
 	 * @throws Exception
 	 */
@@ -125,7 +124,7 @@ public class Automaat {
 	}
 
 	/**
-	 * als saldo is opgevraagd, nogmaals vragen of user wil opnemen of niet.
+	 * Als saldo is opgevraagd, nogmaals vragen of user wil opnemen of niet.
 	 * @param choice String keuze
 	 * @throws IOException
 	 */
@@ -163,7 +162,7 @@ public class Automaat {
 	}
 	
 	/**
-	 * methode om bij te houden wat er met het aantal pincode pogingen gebeurt.
+	 * Methode om bij te houden wat er met het aantal pincode pogingen gebeurt.
 	 * @param pincodeAuthenticatie String[] gesplitte reactie van bank.
 	 * @throws IOException
 	 */
