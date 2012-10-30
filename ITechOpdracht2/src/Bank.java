@@ -14,6 +14,7 @@ public class Bank {
 		ArrayList<Rekening> rekeningen = new ArrayList<Rekening>();
 		Rekening rekening = new Rekening("123456789", "9876", 500.0);
 		rekeningen.add(rekening);
+		Rekening werkRekening = null;
 
 		ServerSocket welcomeSocket = new ServerSocket(8080);
 		while(true) {
@@ -82,8 +83,6 @@ public class Bank {
 
 			if(automaatpincode[0].equals("pincode"))	{
 
-				Rekening werkRekening = null;
-
 				for (int i = 0; i<rekeningen.size(); i++) {
 					Rekening testRekening = rekeningen.get(i);
 					if (testRekening.getPasnummer().equals(automaatpincode[1])){
@@ -98,6 +97,14 @@ public class Bank {
 				}
 			}
 
+			String keuze = inFromClient.readLine();
+		
+			
+			if(keuze.equals("saldo"))	{
+				writer.println(werkRekening.getSaldo());
+			} else if(keuze.equals("opname"))	{
+				
+			}
 			//connectionSocket.close();
 		}
 

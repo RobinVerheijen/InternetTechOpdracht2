@@ -1,5 +1,6 @@
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 
@@ -8,30 +9,33 @@ public class Automaat {
 
 	private static final int id = 10;
 	private String address;
-	
+	private static BufferedReader inFromUser;
+	private static DataOutputStream outToServer;
+	private static BufferedReader inFromServer;
+
 	public static void main(String[] args) throws Exception {
-		
+
 		String sentence;
-		
+
 		String pasnummer;
-		String pincode;
-		
+		String pincode = null;
+
 		System.out.println("Vul uw pasnummer in: ");
-		BufferedReader inFromUser = new BufferedReader(new InputStreamReader(System.in));
+		inFromUser = new BufferedReader(new InputStreamReader(System.in));
 		Socket clientSocket = new Socket("localhost",8080);
-		DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
-		BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-		
+		outToServer = new DataOutputStream(clientSocket.getOutputStream());
+		inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+
 		//pasnummer uitlezen
 		pasnummer = inFromUser.readLine();
-		
+
 		//voordat het pasnummer wordt opgestuurd de handshake uitvoeren
-		
+
 		//vragen aan de bank of het wel de bank is
 		outToServer.writeBytes("bankcontrole" + "\n");
-		
+
 		//reactie van de bank uitlezen, als het het juiste id is stuurt de automaat de informatie op
-				
+
 		sentence = inFromServer.readLine();
 		String[] bankcheck = sentence.split(" ");
 
@@ -43,21 +47,21 @@ public class Automaat {
 				clientSocket.close();
 			}
 		}
-		
+
 		String authenticatie = inFromServer.readLine();
-		
+
 		if(authenticatie.equals("1"))	{
 			System.out.println("authenticatie correct");
 			outToServer.writeBytes("pasnummer " + pasnummer + "\n");
 		} else if(authenticatie.equals("2"))	{
 			System.out.println("authenticatie fout");
 		}
-		
+
 		String[] pasnummerAuthenticatie = inFromServer.readLine().split(" ");
-		
+
 		System.out.println(pasnummerAuthenticatie[0]);
 		System.out.println(pasnummerAuthenticatie[1]);
-		
+
 		if(pasnummerAuthenticatie[0].equals("pasnummer"))	{
 			if(pasnummerAuthenticatie[1].equals("1"))	{
 				System.out.println("pincode: ");
@@ -70,18 +74,50 @@ public class Automaat {
 		}
 
 		String[] pincodeAuthenticatie = inFromServer.readLine().split(" ");
-		
+
 		System.out.println(pincodeAuthenticatie[0]);
 		System.out.println(pincodeAuthenticatie[1]);
-		
-		if(pasnummerAuthenticatie[0].equals("pincode"))	{
-			if(pasnummerAuthenticatie[1].equals("1"))	{
-				System.out.println("Saldo/Opnemen");
+
+		if(pincodeAuthenticatie[0].equals("pincode"))	{
+			if(pincodeAuthenticatie[1].equals("1"))	{
+				System.out.println("Maak uw keuze: \n" +
+						"1. Saldo opvragen\n" +
+						"2. Geld opnemen");
 			} else	{
 				System.out.println("foute pincode, de verbinding wordt verbroken");
 				clientSocket.close();
 			}
+		}	
+		String keuze = inFromUser.readLine();
+		checkChoice(keuze);
+		System.out.println("Wat wilt u nu doen?\n" +
+				"1. Geld opnemen\n" +
+				"2. Stoppen");
+		keuze = inFromUser.readLine();
+		if(keuze.equals("1"))	{
+			
+		} else if(keuze.equals("2"))	{
+			System.out.println("Sessie be‘indigd, prettige dag verder");
+			clientSocket.close();
 		}
-		
+	}
+	private static String checkChoice(String choice) throws IOException	{
+		if(choice.equals("1"))	{
+			outToServer.writeBytes("saldo\n");
+
+			String saldo = inFromServer.readLine();
+
+			System.out.println("Uw huidige saldo bedraagt: " + saldo);
+
+			
+		} else if (choice.equals("2"))	{
+			outToServer.writeBytes("opname\n");
+
+		} else	{
+			System.out.println("Onjuiste keuze, maak een keuze uit 1 of 2");
+			choice = inFromUser.readLine();
+			checkChoice(choice);
+		}
+		return choice;
 	}
 }
