@@ -12,17 +12,19 @@ public class Automaat {
 	private static BufferedReader inFromUser;
 	private static DataOutputStream outToServer;
 	private static BufferedReader inFromServer;
+	private static Socket clientSocket;
+	private static String pasnummer;
+
 
 	public static void main(String[] args) throws Exception {
 
 		String sentence;
 
-		String pasnummer;
 		String pincode = null;
 
 		System.out.println("Vul uw pasnummer in: ");
 		inFromUser = new BufferedReader(new InputStreamReader(System.in));
-		Socket clientSocket = new Socket("localhost",8080);
+		clientSocket = new Socket("localhost",8080);
 		outToServer = new DataOutputStream(clientSocket.getOutputStream());
 		inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 
@@ -72,22 +74,11 @@ public class Automaat {
 				clientSocket.close();
 			}
 		}
-
+		
 		String[] pincodeAuthenticatie = inFromServer.readLine().split(" ");
+		pinCodeCheck(pincodeAuthenticatie);
 
-		System.out.println(pincodeAuthenticatie[0]);
-		System.out.println(pincodeAuthenticatie[1]);
-
-		if(pincodeAuthenticatie[0].equals("pincode"))	{
-			if(pincodeAuthenticatie[1].equals("1"))	{
-				System.out.println("Maak uw keuze: \n" +
-						"1. Saldo opvragen\n" +
-						"2. Geld opnemen");
-			} else	{
-				System.out.println("foute pincode, de verbinding wordt verbroken");
-				clientSocket.close();
-			}
-		}	
+		
 		String keuze = inFromUser.readLine();
 		String choice = checkChoice(keuze);
 		if (choice.equals("2")) {
@@ -149,6 +140,28 @@ public class Automaat {
 		} else {
 			System.out.println("Te weinig saldo!, Sessie wordt be‘indigd.");
 		}
+	}
+	private static void pinCodeCheck(String[] pincodeAuthenticatie) throws IOException	{
 
+		System.out.println(pincodeAuthenticatie[0]);
+		System.out.println(pincodeAuthenticatie[1]);
+
+		if(pincodeAuthenticatie[0].equals("pincode"))	{
+			if(pincodeAuthenticatie[1].equals("1"))	{
+				System.out.println("Maak uw keuze: \n" +
+						"1. Saldo opvragen\n" +
+						"2. Geld opnemen");
+			} else	if(pincodeAuthenticatie[1].equals("3")){
+				String resterendePogingen = pincodeAuthenticatie[3];
+				System.out.println("Onjuiste pincode, u heeft " + resterendePogingen + " pogingen over, probeer het opnieuw\n" +
+						"Pincode: ");
+				String pincode = inFromUser.readLine();
+				outToServer.writeBytes("pincode " + pasnummer + " " + pincode + "\n");
+				pinCodeCheck(inFromServer.readLine().split(" "));
+			} else if(pincodeAuthenticatie[1].equals("2"))
+			System.out.println("foute pincode, de verbinding wordt verbroken");
+			clientSocket.close();
+		}	
 	}
 }
+

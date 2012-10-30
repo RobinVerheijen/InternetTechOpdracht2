@@ -1,4 +1,5 @@
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
@@ -8,21 +9,28 @@ import java.util.ArrayList;
 public class Bank {
 
 	private static final int id = 20;
+	private static ArrayList<Rekening> rekeningen;
+	private static Rekening werkRekening = null;
+	private static PrintWriter writer;
+	private static int resterendePogingen;
+	private static BufferedReader inFromClient;
+	private static Socket connectionSocket;
+
 
 	public static void main(String argv[]) throws Exception {
 
-		ArrayList<Rekening> rekeningen = new ArrayList<Rekening>();
+		rekeningen = new ArrayList<Rekening>();
 		Rekening rekening = new Rekening("123456789", "9876", 500.0);
 		rekeningen.add(rekening);
-		Rekening werkRekening = null;
+		resterendePogingen = 3;
 
 		ServerSocket welcomeSocket = new ServerSocket(8080);
 		while(true) {
-			Socket connectionSocket = welcomeSocket.accept();
+			connectionSocket = welcomeSocket.accept();
 
-			BufferedReader inFromClient = new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
+			inFromClient = new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
 
-			PrintWriter writer = new PrintWriter(connectionSocket.getOutputStream(), true);
+			writer = new PrintWriter(connectionSocket.getOutputStream(), true);
 
 			//Uitlezen wat de automaat heeft opgestuurd
 			String bankcontrole = inFromClient.readLine();
@@ -72,30 +80,8 @@ public class Bank {
 					writer.println("pasnummer " + 2);
 				}
 			}
-			
 			String pincode = inFromClient.readLine();
-
-			String[] automaatpincode = pincode.split(" ");
-
-			System.out.println(automaatpincode[0]);
-			System.out.println(automaatpincode[1]);
-			System.out.println(automaatpincode[2]);
-
-			if(automaatpincode[0].equals("pincode"))	{
-
-				for (int i = 0; i<rekeningen.size(); i++) {
-					Rekening testRekening = rekeningen.get(i);
-					if (testRekening.getPasnummer().equals(automaatpincode[1])){
-						werkRekening = testRekening;
-					}
-				}
-				
-				if (werkRekening.getPincode().equals(automaatpincode[2])) {
-					writer.println("pincode " + 1);
-				} else {
-					writer.println("pincode " + 2);
-				}
-			}
+			checkPincode(pincode);
 
 			String keuze = inFromClient.readLine();
 			String[] keuzesplit = keuze.split(" ");
@@ -136,5 +122,35 @@ public class Bank {
 		}
 
 	}
+private static void checkPincode(String pincode) throws IOException	{
+	String[] automaatpincode = pincode.split(" ");
 
+	System.out.println(automaatpincode[0]);
+	System.out.println(automaatpincode[1]);
+	System.out.println(automaatpincode[2]);
+
+	if(automaatpincode[0].equals("pincode"))	{
+
+		for (int i = 0; i< rekeningen.size(); i++) {
+			Rekening testRekening = rekeningen.get(i);
+			if (testRekening.getPasnummer().equals(automaatpincode[1])){
+				werkRekening = testRekening;
+			}
+		}
+		
+		if (werkRekening.getPincode().equals(automaatpincode[2])) {
+			writer.println("pincode " + 1);
+		} else if(resterendePogingen > 0){
+			resterendePogingen -= 1;
+			writer.println("pincode " + 3 + " pogingen " + resterendePogingen);
+			String poging = inFromClient.readLine();
+			checkPincode(poging);
+		} else if(resterendePogingen == 0)	{
+			writer.println("pincode " + 2);
+			writer.close();
+			inFromClient.close();
+			connectionSocket.close();
+		}
+	}
+}
 }
