@@ -25,7 +25,6 @@ public class Automaat {
 		//pasnummer uitlezen
 		pasnummer = inFromUser.readLine();
 		
-		System.out.println(pasnummer);
 		//voordat het pasnummer wordt opgestuurd de handshake uitvoeren
 		
 		//vragen aan de bank of het wel de bank is
@@ -35,9 +34,6 @@ public class Automaat {
 				
 		sentence = inFromServer.readLine();
 		String[] bankcheck = sentence.split(" ");
-		
-		System.out.println(bankcheck[0]);
-		System.out.println(bankcheck[1]);
 
 		if(bankcheck[0].equals("bankid"))	{
 			if(bankcheck[1].equals("20"))	{
@@ -49,7 +45,6 @@ public class Automaat {
 		}
 		
 		String authenticatie = inFromServer.readLine();
-		System.out.println("AUTHENTICATIE" + authenticatie);
 		
 		if(authenticatie.equals("1"))	{
 			System.out.println("authenticatie correct");
@@ -67,15 +62,26 @@ public class Automaat {
 			if(pasnummerAuthenticatie[1].equals("1"))	{
 				System.out.println("pincode: ");
 				pincode = inFromUser.readLine();
+				outToServer.writeBytes("pincode " + pasnummer + " " + pincode + "\n");
 			} else	{
 				System.out.println("fout pasnummer, de verbinding wordt verbroken");
 				clientSocket.close();
 			}
 		}
 
+		String[] pincodeAuthenticatie = inFromServer.readLine().split(" ");
 		
+		System.out.println(pincodeAuthenticatie[0]);
+		System.out.println(pincodeAuthenticatie[1]);
 		
-		
+		if(pasnummerAuthenticatie[0].equals("pincode"))	{
+			if(pasnummerAuthenticatie[1].equals("1"))	{
+				System.out.println("Saldo/Opnemen");
+			} else	{
+				System.out.println("foute pincode, de verbinding wordt verbroken");
+				clientSocket.close();
+			}
+		}
 		
 	}
 }
