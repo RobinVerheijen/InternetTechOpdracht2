@@ -82,6 +82,9 @@ public class Bank {
 			}
 			String pincode = inFromClient.readLine();
 			checkPincode(pincode);
+			if (resterendePogingen == 0){
+				break;
+			}
 
 			String keuze = inFromClient.readLine();
 			String[] keuzesplit = keuze.split(" ");

@@ -158,9 +158,10 @@ public class Automaat {
 				String pincode = inFromUser.readLine();
 				outToServer.writeBytes("pincode " + pasnummer + " " + pincode + "\n");
 				pinCodeCheck(inFromServer.readLine().split(" "));
-			} else if(pincodeAuthenticatie[1].equals("2"))
+			} else if(pincodeAuthenticatie[1].equals("2")) {
 			System.out.println("foute pincode, de verbinding wordt verbroken");
 			clientSocket.close();
+			}
 		}	
 	}
 }
