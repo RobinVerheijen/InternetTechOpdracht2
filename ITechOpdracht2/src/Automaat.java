@@ -6,7 +6,7 @@ import java.net.Socket;
 
 public class Automaat {
 
-	private static final int id = 1;
+	private static final int id = 10;
 	private String address;
 	
 	public static void main(String[] args) throws Exception {
@@ -14,6 +14,7 @@ public class Automaat {
 		String sentence;
 		
 		String pasnummer;
+		String pincode;
 		
 		System.out.println("Vul uw pasnummer in: ");
 		BufferedReader inFromUser = new BufferedReader(new InputStreamReader(System.in));
@@ -39,8 +40,11 @@ public class Automaat {
 		System.out.println(bankcheck[1]);
 
 		if(bankcheck[0].equals("bankid"))	{
-			if(bankcheck[1].equals("2"))	{
+			if(bankcheck[1].equals("20"))	{
 				outToServer.writeBytes("automaatid "+ id + "\n");
+			} else {
+				System.out.println("Fout met bankconnectie!");
+				clientSocket.close();
 			}
 		}
 		
@@ -62,6 +66,7 @@ public class Automaat {
 		if(pasnummerAuthenticatie[0].equals("pasnummer"))	{
 			if(pasnummerAuthenticatie[1].equals("1"))	{
 				System.out.println("pincode: ");
+				pincode = inFromUser.readLine();
 			} else	{
 				System.out.println("fout pasnummer, de verbinding wordt verbroken");
 				clientSocket.close();

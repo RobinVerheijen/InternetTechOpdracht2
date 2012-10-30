@@ -7,7 +7,7 @@ import java.net.Socket;
 
 public class Bank {
 	
-	private static final int id = 2;
+	private static final int id = 20;
 
 	public static void main(String argv[]) throws Exception {
 		
@@ -38,11 +38,9 @@ public class Bank {
 			System.out.println(sentence[0]);
 			System.out.println(sentence[1]);
 			if(sentence[0].equals("automaatid"))	{
-				if(sentence[1].equals("1"))	{
-					clientSentence = "1";
+				if(sentence[1].equals("10"))	{
 					writer.println("1");
 				} else	{
-					clientSentence = "2";
 					writer.println("2");
 				}
 			}
@@ -56,7 +54,7 @@ public class Bank {
 			System.out.println(automaatpasnummer[1]);
 			
 			if(automaatpasnummer[0].equals("pasnummer"))	{
-				if(!automaatpasnummer[1].equals("123456789"))	{
+				if(automaatpasnummer[1].equals("123456789"))	{
 					writer.println("pasnummer " + 1);
 				}
 			}
