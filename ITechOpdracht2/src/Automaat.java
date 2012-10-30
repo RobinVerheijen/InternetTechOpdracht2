@@ -98,12 +98,8 @@ public class Automaat {
 					"1. Geld opnemen\n" +
 					"2. Stoppen");
 			keuze = inFromUser.readLine();
-			if(keuze.equals("1"))	{
-				opnemen();
-			} else if(keuze.equals("2"))	{
-				System.out.println("Sessie be‘indigd, prettige dag verder");
-				clientSocket.close();
-			}
+			checkChoice2(keuze);
+			clientSocket.close();
 		}
 	}
 
@@ -126,6 +122,19 @@ public class Automaat {
 		return choice;
 	}
 
+	private static void checkChoice2(String choice) throws IOException	{
+		if(choice.equals("1"))	{
+			opnemen();
+			System.out.println("Sessie be‘indigd, prettige dag verder");
+		} else if (choice.equals("2"))	{
+			System.out.println("Sessie be‘indigd, prettige dag verder");
+		} else	{
+			System.out.println("Onjuiste keuze, maak een keuze uit 1 of 2");
+			choice = inFromUser.readLine();
+			checkChoice2(choice);
+		}
+	}
+	
 	private static void opnemen() throws IOException {
 		System.out.println("Welk bedrag wilt u opnemen: ");
 		String opname = inFromUser.readLine();
